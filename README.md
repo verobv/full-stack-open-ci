@@ -14,3 +14,6 @@ Start by running `npm install` inside the project folder
 
 ## Render deploy link
 https://full-stack-open-ci-meuo.onrender.com/
+
+## EX 21 and 22
+https://github.com/verobv/cicd-phonebook
