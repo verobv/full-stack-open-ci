@@ -2,8 +2,8 @@ name: Periodic Hello
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/15 * * * *'
+  #schedule:
+    #- cron: '*/15 * * * *'
 
 jobs:
   health_check:
@@ -13,7 +13,7 @@ jobs:
         uses: jtalk/url-health-check-action@v5
         with:
             # Check the following URLs one by one sequentially
-            url: https://full-stack-open-ci-meuo.onrender.com
+            url: https://full-stack-open-ci-meuo.onrender.com/doesn't-exist
             # Follow redirects, or just report success on 3xx status codes
             follow-redirect: false
             # Fail this action after this many failed attempts
