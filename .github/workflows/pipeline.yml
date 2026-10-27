@@ -31,6 +31,38 @@ jobs:
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }} 
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }} 
+      - name: Notifying failure
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ failure() }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: '❌ Build Failed! The pipeline encountered an error'
+          title: "Failure Details"
+          description: |
+            **Repository:** ${{ github.repository }}
+            **Branch:** ${{ github.ref_name }}
+            **Commit:** ${{ github.sha }}
+            **Message:** ${{ github.event_name == 'push' && github.event.head_commit.message || github.event.pull_request.title }}
+            **Author:** ${{ github.actor }}
+            **Workflow:**  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            **Job:** ${{ github.job }}
+
+            [View Commit](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            [View Workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          color: 0xff0000
+            
+      - name: Notifying success
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ success() }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: '✅ Deployment Successful! A new version deployed to production'
+          title: "Deployment details"
+          description: |
+            **Commit:** ${{ github.sha }}
+            **Message:** ${{ github.event_name == 'push' && github.event.head_commit.message || github.event.pull_request.title }}
+            **Author:** ${{ github.actor }}
+          color: 0x00ff00
   
   tag_release:
     needs: [simple_deployment_pipeline]
