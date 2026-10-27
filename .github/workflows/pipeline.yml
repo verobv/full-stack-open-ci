@@ -56,12 +56,11 @@ jobs:
 
   notify_failure: 
     needs: [build_and_test, deploy]
-    if: ${{ always() && (needs.build_and_test.result == 'failure' || needs.deploy.result == 'failure') }}
+    if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - name: Notifying failure
         uses: sarisia/actions-status-discord@v1
-        if: ${{ failure() }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           content: '❌ Build Failed! The pipeline encountered an error'
